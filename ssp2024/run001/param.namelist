@@ -1,0 +1,37 @@
+&numer
+  nx = 128                   ! Grid number in x direction
+  ny = 96                    ! Grid number in y direction
+  litime = 1000000000        ! Iteration limit of time
+  elt_limit = 180.d0         ! Elapese time limit [sec]
+  time_limit = 20.d0         ! Simulation time limit
+  lx = 3.14159265358979d1    ! Box size -lx <= xx < lx
+  ly = 3.14159265358979d1    ! Box size -ly <= yy < ly
+  dt_max = 0.01d0            ! Maximum time-step size
+  dt_out = 0.1d0             ! Time step for output
+  dt = 0.01d0                ! Time-step size
+/
+
+&physp
+  ca = 3.d0                  ! Adiabaticity parameter
+  nu = 0.01d0                ! Viscosity
+  eta = 4.d0                 ! Density gradient
+  !gammae = 0.3d0             ! ExB shearing rate
+  gammae = 0.d0             ! ExB shearing rate
+  init_ampl = 1.d-2          ! Initial amplitude of fluctuations
+/
+
+&flags
+  flag_adiabaticity = "kysquare"
+                  ! = "constant" ! C*(phi-n) where kz=const.
+                  ! = "kysquare" ! C*ky**2*(phi-n) where kz~ky
+ 
+  flag_calctype = "nonlinear"
+              ! = "linear"    ! Linear
+              ! = "nonlinear" ! Nonlinear
+
+  flag_datatype = "netcdf"
+              ! = "ascii"  ! ASCII data output
+              ! = "binary" ! BINARY data output
+              ! = "netcdf" ! NETCDF4 data output
+/
+
