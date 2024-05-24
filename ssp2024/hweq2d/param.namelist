@@ -3,7 +3,7 @@
   ny = 96                    ! Grid number in y direction
   litime = 1000000000        ! Iteration limit of time
   elt_limit = 180.d0         ! Elapese time limit [sec]
-  time_limit = 20.d0        ! Simulation time limit
+  time_limit = 120.d0        ! Simulation time limit
   lx = 3.14159265358979d1    ! Box size -lx <= xx < lx
   ly = 3.14159265358979d1    ! Box size -ly <= yy < ly
   dt_max = 0.01d0            ! Maximum time-step size

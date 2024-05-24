@@ -105,39 +105,63 @@ plt.show()
 # In[ ]:
 
 
+# ### Example of animation ###
+# from matplotlib.animation import FuncAnimation
+# from IPython.display import HTML
+
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+# ax.set_xlabel("x_movingframe")
+# ax.set_ylabel("y_movingframe")
+# title=fig.suptitle(r"$\phi(x,y)$ Time = {:5.2f}".format(t[0]))
+# quad=ax.pcolormesh(x, y, phi[0,:,:],
+#                    shading="auto",cmap="jet")
+# vmax=np.max(np.abs(phi[0,:,:]))
+# quad.set_clim(-vmax,vmax)
+# cbar=fig.colorbar(quad,shrink=1.0,aspect=5)
+
+# def update_quad(i):
+#     title.set_text(r"$\phi(x,y)$ Time = {:5.2f}".format(t[i]))
+#     quad.set_array(np.array([phi[i,:,:]]).flatten())
+#     vmax=np.max(np.abs(phi[i,:,:]))
+#     quad.set_clim(-vmax,vmax)
+    
+# ani = FuncAnimation(fig, update_quad,
+#                     frames=range(0,len(t),10), interval=100)
+# #ani.save('advection.mp4', dpi=100)
+
+# #plt.show()
+# HTML(ani.to_jshtml())
+
+
+# In[ ]:
+
+
 ### Example of animation ###
 from matplotlib.animation import FuncAnimation
 from IPython.display import HTML
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.set_xlabel("x_movingframe")
-ax.set_ylabel("y_movingframe")
+ax.set_xlabel("x")
+ax.set_ylabel("y")
 title=fig.suptitle(r"$\phi(x,y)$ Time = {:5.2f}".format(t[0]))
-quad=ax.pcolormesh(x, y, phi[0,:,:],
-                   shading="auto",cmap="jet")
+quad=ax.pcolormesh(x, y, phi[0,:,:], shading="auto",cmap="jet")
 vmax=np.max(np.abs(phi[0,:,:]))
 quad.set_clim(-vmax,vmax)
 cbar=fig.colorbar(quad,shrink=1.0,aspect=5)
 
 def update_quad(i):
-    title.set_text(r"$n(x,y)$ Time = {:5.2f}".format(t[i]))
+    title.set_text(r"$\phi(x,y)$ Time = {:5.2f}".format(t[i]))
     quad.set_array(np.array([phi[i,:,:]]).flatten())
     vmax=np.max(np.abs(phi[i,:,:]))
     quad.set_clim(-vmax,vmax)
-    
-ani = FuncAnimation(fig, update_quad,
-                    frames=range(0,len(t),10), interval=100)
-#ani.save('advection.mp4', dpi=100)
 
-#plt.show()
-HTML(ani.to_jshtml())
+for i in range(0,len(t),1):
+    update_quad(i)
+    fig.savefig("./png_phiinxy/phiinxy_t{:08d}".format(i),dpi=100)
 
-
-# In[ ]:
-
-
-
+plt.show()
 
 
 # In[ ]:

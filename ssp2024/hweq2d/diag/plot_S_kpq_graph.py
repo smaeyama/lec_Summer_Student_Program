@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
 
-ds = xr.open_mfdataset("./data_netcdf/S_kpq_0100-0199.nc")
+ds = xr.open_mfdataset("./data_netcdf/S_kpq_0000-0099.nc")
 S_kpq = np.array(ds.S_kpq)
 # print(S_kpq)
 ky=np.array(ds.ky)
@@ -18,7 +18,13 @@ nky=int((len(ky)-1)/2)
 #S_kpq_max = np.abs(S_kpq).max()
 S_kpq_max = np.max([abs(S_kpq.max()),abs(S_kpq.min())])
 S_kpq = S_kpq / S_kpq_max
-print(S_kpq_max,S_kpq.max(),S_kpq.min())
+print("S_kpq_max(abs):", S_kpq_max)
+print("S_kpq_max(normalized):",S_kpq.max(),", S_kpq_min(normalized):",S_kpq.min())
+
+
+# In[ ]:
+
+
 import pygraphviz as pgv
 from IPython.display import display, SVG
 
@@ -264,7 +270,15 @@ def triadgraph_symmetric_kpq(trans,mx_in,my_in,qx_in,qy_in,kxmin=1.0,kymin=1.0,o
 
     return
 
-triadgraph_symmetric_all(S_kpq,title="S_kpq",screening=0.5)
+
+# In[ ]:
+
+
+triadgraph_symmetric_all(S_kpq,kxmin=kx[1],kymin=ky[1],title="S_kpq",screening=0.5)
+
+
+# In[ ]:
+
 
 # G = pgv.AGraph(directed=True,strict=False)
 # G.add_node?
@@ -284,8 +298,6 @@ print("S_qkp=",wS_qkp,"#(qx,qy)=({:},{:})".format(kx[qx],ky[qy]))
 print("total=",wS_kpq+wS_pqk+wS_qkp)
 
 triadgraph_symmetric_kpq(S_kpq,mx_in=mx,my_in=my,qx_in=qx,qy_in=qy,title="S_kpq",screening=0.0)
- 
- 
 
 
 # In[ ]:

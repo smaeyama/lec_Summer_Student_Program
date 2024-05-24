@@ -54,7 +54,7 @@ SUBROUTINE fft_backward_xy (ww, wwxy)
     wwkk(:,:) = (0._DP, 0._DP)
 
 !$OMP parallel default(none) &
-!$OMP private(mx,my) shared(wwkk,ww)
+!$OMP private(mx,my) shared(wwkk,ww,nkx,nky,ny)
 !$OMP do
     do my = 0, nky
       do mx = 0, nkx
@@ -93,7 +93,7 @@ SUBROUTINE fft_forward_xy (wwxy, ww)
     ceff_norm = 1._DP / real(nx * ny, kind=DP)
 
 !$OMP parallel default(none) &
-!$OMP private(mx,my) shared(ceff_norm,wwkk,ww)
+!$OMP private(mx,my) shared(ceff_norm,wwkk,ww,nkx,nky,ny)
 !$OMP do
     do my = 0, nky
       do mx = 0, nkx

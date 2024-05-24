@@ -2,43 +2,29 @@
 # Makefile
 #
 
-## Intel fortran @ p-srv1 ###
-##    NOTE: you need to add the following path on the terminal for execution:
-##    export LD_LIBRARY_PATH=/usr/local/pken/netcdf-fortran-4.5.3-ifort/build/lib:$LD_LIBRARY_PATH
-#FC = ifort
-#FFLAGS = -warn all -fpp -std #-traceback \
-#         -check bounds -check uninit -fpe0 # These options may cause slow down
-#FFLAGS += -O3 -xHOST -r8 -no-prec-div --shared-intel -mcmodel=large
-#INC =
-#LIB = -mkl
-#OPENMP = #-openmp
-##NF_DIR=/usr/local/pken/netcdf-fortran-4.5.3-ifort/build
-#NF_DIR=/usr/local/pken/netcdf-fortran-4.5.3-ifort/build
-#INC += -I/$(NF_DIR)/include
-#LIB += -L/$(NF_DIR)/lib -lnetcdff
+
+
+### Intel fortran ###
+FC = ifx
+FFLAGS = -warn all -fpp -std #-traceback \
+         -check bounds -check uninit -fpe0 # These options may cause slow down
+FFLAGS += -O3 -xHOST -r8 -mcmodel=large
+INC = 
+LIB = -qmkl
+NF_DIR = /home/smaeyama/mylib/netcdf-fortran-4.6.1-ifx
+INC += -I/$(NF_DIR)/include
+LIB += -L/$(NF_DIR)/lib -lnetcdff
+OPENMP = -qopenmp
 
 ### GNU fortran ###
 #FC = gfortran
 #FFLAGS = -Wall -Wextra -pedantic -fbacktrace \
 #         -fbounds-check -Wuninitialized -ffpe-trap=invalid,zero,overflow 
 #FFLAGS += -mcmodel=medium -m64 -march=native -mtune=native -O3 -ffast-math
-##FFTW_DIR=`spack location -i fftw`            # For spack
-##NF_DIR=`spack location -i netcdf-fortran`    # For spack
-##FFTW_DIR=/usr/                               # For apt
-##NF_DIR=$(FFTW_DIR)                           # For apt
-#FFTW_DIR=$(HOME)/mylib/Miniconda3/envs/pken2/ # For conda
-#NF_DIR=$(FFTW_DIR)                            # For conda
-#INC = -I/$(FFTW_DIR)/include
-#LIB = -L/$(FFTW_DIR)/lib -lfftw3 -lm
-#INC += -I/$(NF_DIR)/include
-#LIB += -L/$(NF_DIR)/lib -lnetcdff
-#OPENMP = #-fopenmp
-FC = gfortran
-FFLAGS = -Wall -Wextra -pedantic -fbacktrace \
-         -fbounds-check -Wuninitialized -ffpe-trap=invalid,zero,overflow 
-FFLAGS += -mcmodel=medium -m64 -march=native -mtune=native -O3 -ffast-math
-INC = -I/usr/include
-LIB = -L/usr/lib -lfftw3 -lm -lnetcdff
+#INC = -I/usr/include
+#LIB = -L/usr/lib -lfftw3 -lm -lnetcdff -lfftw3_threads
+# #OPENMP = -fopenmp
+# #LIB += -lfftw3_threads
 
 DIR = ./src/
 
@@ -78,3 +64,5 @@ git:
 	jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace diag/*.ipynb
 	jupyter nbconvert --to python diag/*.ipynb
 	rm -rf diag/.ipynb_checkpoints/
+	find ./diag/data_netcdf/ -type f -name *.nc  | xargs rm -f
+	find ./diag/png_*/ -type f -name *.png  | xargs rm -f

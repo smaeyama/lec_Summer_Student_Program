@@ -104,21 +104,21 @@ def calc_pbk_k(mx,my,nkx,nky,kx,ky,fk,gk):
 # In[ ]:
 
 
-def calc_Skpq_k(mx,my,nkx,nky,kx,ky,fk,gk,hk):
-    Skpq = np.zeros([fk.shape[0],2*nky+1,2*nkx+1],dtype=np.float64)
+def calc_S_kpq_k(mx,my,nkx,nky,kx,ky,fk,gk,hk):
+    S_kpq = np.zeros([fk.shape[0],2*nky+1,2*nkx+1],dtype=np.float64)
     for py in range(max(-nky-my, -nky), min(nky, nky-my)+1):
         qy = -py-my
         for px in range(max(-nkx-mx, -nkx), min(nkx, nkx-mx)+1):
             qx = -px-mx
-            Skpq[:,py,px] = - 0.5 * (kx[px]*ky[qy]-ky[py]*kx[qx]) * ((fk[:,py,px]*gk[:,qy,qx] - fk[:,qy,qx]*gk[:,py,px])*hk[:,my,mx]).real
-    return Skpq
+            S_kpq[:,py,px] = - 0.5 * (kx[px]*ky[qy]-ky[py]*kx[qx]) * ((fk[:,py,px]*gk[:,qy,qx] - fk[:,qy,qx]*gk[:,py,px])*hk[:,my,mx]).real
+    return S_kpq
 
-# # Check: calc_Skpq_k
+# # Check: calc_S_kpq_k
 # mx = 0
 # my = 10
 # wk_t = (t[:-1]+t[1:])/2
 # domgkdt = np.diff(omgk[:,my,mx]) / (t[1]-t[0])
-# S_kpq_phiomg = calc_Skpq_k(mx,my,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
+# S_kpq_phiomg = calc_S_kpq_k(mx,my,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
 # T_kpq_phiomg = np.sum(S_kpq_phiomg, axis=(1,2))
 # pbk_phiomg = calc_pbk_k(mx,my,nkx,nky,kx_shift,ky_shift,phik,omgk)
 # rhs = np.real(np.conjugate(-phik[:,my,mx]) * (- pbk_phiomg))
@@ -137,8 +137,8 @@ from time import time as timer
 from numba import njit, prange
 
 @njit(parallel=True)
-def calc_Skpq_time_averaged(itsta,itend,nkx,nky,kx,ky,fk,gk,hk):
-    Skpq = np.zeros((2*nky+1,2*nkx+1,2*nky+1,2*nkx+1),dtype=np.float64)
+def calc_S_kpq_time_averaged(itsta,itend,nkx,nky,kx,ky,fk,gk,hk):
+    S_kpq = np.zeros((2*nky+1,2*nkx+1,2*nky+1,2*nkx+1),dtype=np.float64)
     for my in prange(-nky,nky+1): # Parallelization by Numba
     # for my in range(-nky,nky+1):
         for py in range(max(-nky-my, -nky), min(nky, nky-my)+1):
@@ -147,32 +147,32 @@ def calc_Skpq_time_averaged(itsta,itend,nkx,nky,kx,ky,fk,gk,hk):
                 for px in range(max(-nkx-mx, -nkx), min(nkx, nkx-mx)+1):
                     qx = -px-mx
                     fgh_ave = np.average(((fk[itsta:itend,py,px]*gk[itsta:itend,qy,qx] - fk[itsta:itend,qy,qx]*gk[itsta:itend,py,px])*hk[itsta:itend,my,mx]).real)
-                    Skpq[my,mx,py,px] = - 0.5 * (kx[px]*ky[qy]-ky[py]*kx[qx]) * fgh_ave
-    return Skpq
+                    S_kpq[my,mx,py,px] = - 0.5 * (kx[px]*ky[qy]-ky[py]*kx[qx]) * fgh_ave
+    return S_kpq
 
-# Check: calc_Skpq_time_averaged
-mx = 0
-my = 10
-S_kpq_phiomg = calc_Skpq_k(mx,my,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
+# # Check: calc_S_kpq_time_averaged
+# mx = 0
+# my = 10
+# S_kpq_phiomg = calc_S_kpq_k(mx,my,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
 
-itsta = 100
-itend = 200
+# itsta = 100
+# itend = 200
 
-t1 = timer()
-Skpq_ave = calc_Skpq_time_averaged(itsta,itend,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
-t2 = timer(); print("Elapsed time [s]:", t2-t1)
+# t1 = timer()
+# S_kpq_ave = calc_S_kpq_time_averaged(itsta,itend,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
+# t2 = timer(); print("Elapsed time [s]:", t2-t1)
 
-print(t[itsta],t[itend])
-Skpq_ave = calc_Skpq_time_averaged(itsta,itend,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
-fig = plt.figure(figsize=(10,4))
-vmax = np.max([Skpq_ave[my,mx,:,:].max(),-Skpq_ave[my,mx,:,:].min()])
-ax = fig.add_subplot(131)
-ax.pcolormesh(np.fft.fftshift(kx2),np.fft.fftshift(ky2),np.fft.fftshift(Skpq_ave[my,mx,:,:]),vmax=vmax,vmin=-vmax,cmap="jet")
-ax = fig.add_subplot(132)
-ax.pcolormesh(np.fft.fftshift(kx2),np.fft.fftshift(ky2),np.fft.fftshift(np.average(S_kpq_phiomg[itsta:itend,:,:],axis=0)),vmax=vmax,vmin=-vmax,cmap="jet")
-ax = fig.add_subplot(133)
-ax.pcolormesh(np.fft.fftshift(kx2),np.fft.fftshift(ky2),np.fft.fftshift(Skpq_ave[my,mx,:,:]-np.average(S_kpq_phiomg[itsta:itend,:,:],axis=0)),vmax=vmax,vmin=-vmax,cmap="seismic")
-plt.show()
+# print(t[itsta],t[itend])
+# S_kpq_ave = calc_S_kpq_time_averaged(itsta,itend,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
+# fig = plt.figure(figsize=(10,4))
+# vmax = np.max([S_kpq_ave[my,mx,:,:].max(),-S_kpq_ave[my,mx,:,:].min()])
+# ax = fig.add_subplot(131)
+# ax.pcolormesh(np.fft.fftshift(kx2),np.fft.fftshift(ky2),np.fft.fftshift(S_kpq_ave[my,mx,:,:]),vmax=vmax,vmin=-vmax,cmap="jet")
+# ax = fig.add_subplot(132)
+# ax.pcolormesh(np.fft.fftshift(kx2),np.fft.fftshift(ky2),np.fft.fftshift(np.average(S_kpq_phiomg[itsta:itend,:,:],axis=0)),vmax=vmax,vmin=-vmax,cmap="jet")
+# ax = fig.add_subplot(133)
+# ax.pcolormesh(np.fft.fftshift(kx2),np.fft.fftshift(ky2),np.fft.fftshift(S_kpq_ave[my,mx,:,:]-np.average(S_kpq_phiomg[itsta:itend,:,:],axis=0)),vmax=vmax,vmin=-vmax,cmap="seismic")
+# plt.show()
 
 
 # In[ ]:
@@ -186,8 +186,8 @@ for i in range(split):
     sta=i*chunk
     end=min((i+1)*chunk,n_out)
     print(i,sta,end)
-    Skpq_ave = calc_Skpq_time_averaged(sta,end,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
-    xr_S_kpq=xr.DataArray(Skpq_ave,dims=("ky","kx","qy","qx"),coords={"ky":ky_shift,"kx":kx_shift,"qy":ky_shift,"qx":kx_shift})
+    S_kpq_ave = calc_S_kpq_time_averaged(sta,end,nkx,nky,kx_shift,ky_shift,phik,omgk,phik)
+    xr_S_kpq=xr.DataArray(S_kpq_ave,dims=("ky","kx","qy","qx"),coords={"ky":ky_shift,"kx":kx_shift,"qy":ky_shift,"qx":kx_shift})
     ds=xr.Dataset({"S_kpq":xr_S_kpq}, 
                   attrs={"description":"S_kpq is the symmetrized energy transfer function S_k^pq. \n"+
                                        "S_kpq means energy gain (S>0) or loss (S<0) of the mode k via the coupling with modes p and q.\n"+
@@ -204,6 +204,7 @@ for i in range(split):
 
 ds = xr.open_dataset("./data_netcdf/S_kpq_0000-0099.nc")
 print(ds)
+ds.close()
 
 
 # In[ ]:

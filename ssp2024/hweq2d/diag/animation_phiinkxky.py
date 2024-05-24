@@ -102,6 +102,39 @@ plt.show()
 # In[ ]:
 
 
+# ### Example of animation ###
+# from matplotlib.animation import FuncAnimation
+# import matplotlib.colors as colors
+# from IPython.display import HTML
+
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+# ax.set_xlabel("kx_movingframe")
+# ax.set_ylabel("ky_movingframe")
+# title=fig.suptitle(r"$|\omega(k_x,k_y)|$ Time = {:5.2f}".format(t[0]))
+# quad=ax.pcolormesh(kx, ky, np.abs(omg[0,:,:]),
+#                    shading="auto",cmap="jet",norm=colors.LogNorm())
+# vmax=np.max(np.abs(omg[0,:,:]))
+# quad.set_clim(None,vmax)
+# cbar=fig.colorbar(quad,shrink=1.0,aspect=5)
+
+# def update_quad(i):
+#     title.set_text(r"$|\omega(k_x,k_y)|$ Time = {:5.2f}".format(t[i]))
+#     quad.set_array(np.abs([omg[i,:,:]]).flatten())
+#     vmax=np.max(np.abs(omg[i,:,:]))
+#     quad.set_clim(None,vmax)
+    
+# ani = FuncAnimation(fig, update_quad,
+#                     frames=range(int(len(t)*0/3),int(len(t)*3/3),10), interval=100)
+# #ani.save('advection.mp4', dpi=100)
+
+# #plt.show()
+# HTML(ani.to_jshtml())
+
+
+# In[ ]:
+
+
 ### Example of animation ###
 from matplotlib.animation import FuncAnimation
 import matplotlib.colors as colors
@@ -109,27 +142,28 @@ from IPython.display import HTML
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.set_xlabel("kx_movingframe")
-ax.set_ylabel("ky_movingframe")
-title=fig.suptitle(r"$|\omega(k_x,k_y)|$ Time = {:5.2f}".format(t[0]))
-quad=ax.pcolormesh(kx, ky, np.abs(omg[0,:,:]),
-                   shading="auto",cmap="jet",norm=colors.LogNorm())
-vmax=np.max(np.abs(omg[0,:,:]))
-quad.set_clim(None,vmax)
+ax.set_xlabel(r"$k_x$")
+ax.set_ylabel(r"$k_y$")
+title=fig.suptitle(r"$|E(k_x,k_y)|$ Time = {:5.2f}".format(t[0]))
+enekxky = ksq * np.abs(phi[0,:,:])**2
+quad=ax.pcolormesh(kx, ky, enekxky,
+                   shading="auto",cmap="plasma",norm=colors.LogNorm())
+vmax=enekxky.max()
+quad.set_clim(vmax*1e-4,vmax)
 cbar=fig.colorbar(quad,shrink=1.0,aspect=5)
 
 def update_quad(i):
-    title.set_text(r"$|\omega(k_x,k_y)|$ Time = {:5.2f}".format(t[i]))
-    quad.set_array(np.abs([omg[i,:,:]]).flatten())
-    vmax=np.max(np.abs(omg[i,:,:]))
-    quad.set_clim(None,vmax)
+    title.set_text(r"$|E(k_x,k_y)|$ Time = {:5.2f}".format(t[i]))
+    enekxky = ksq * np.abs(phi[i,:,:])**2
+    quad.set_array(enekxky.flatten())
+    vmax=enekxky.max()
+    quad.set_clim(vmax*1e-4,vmax)
     
-ani = FuncAnimation(fig, update_quad,
-                    frames=range(int(len(t)*0/3),int(len(t)*3/3),10), interval=100)
-#ani.save('advection.mp4', dpi=100)
+for i in range(0,len(t),1):
+    update_quad(i)
+    fig.savefig("./png_phiinkxky/phiinkxky_t{:08d}".format(i),dpi=100)
 
-#plt.show()
-HTML(ani.to_jshtml())
+plt.show()
 
 
 # In[ ]:

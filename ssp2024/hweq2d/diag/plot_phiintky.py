@@ -57,7 +57,7 @@ enetky = np.sum(filt.reshape(1,nky+1,2*nkx+1) * ksq.reshape(1,nky+1,2*nkx+1) * a
 fig = plt.figure()
 ax = fig.add_subplot(111)
 for my in range(nky+1):
-    ax.plot(t,enetky[:,my],label="ky={:5.2f}".format(ky[my]))
+    ax.plot(t,enetky[:,my],label=r"$k_y$={:5.2f}".format(ky[my]))
 ax.set_yscale("log")
 vmax=float(np.max(enetky))
 ax.set_ylim(vmax*1e-8,vmax)

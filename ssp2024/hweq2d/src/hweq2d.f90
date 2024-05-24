@@ -276,7 +276,7 @@ SUBROUTINE time_diff(time, ff, phi, dfdt)
     end if
 
     if (trim(flag_adiabaticity) == "constant") then ! C*(phi-n) where kz=const.
-!$OMP parallel do default(none) private(mx,my) shared(dfdt,pb_phidns,pb_phiomg,ky,ksq_labframe,ff,phi,eta,ca,nu)
+!$OMP parallel do default(none) private(mx,my) shared(dfdt,pb_phidns,pb_phiomg,ky,ksq_labframe,ff,phi,eta,ca,nu,nkx,nky)
       do my = 0, nky
         do mx = -nkx, nkx
           dfdt(mx,my,0) = - pb_phidns(mx,my)                &
@@ -289,7 +289,7 @@ SUBROUTINE time_diff(time, ff, phi, dfdt)
         end do
       end do
     else if (trim(flag_adiabaticity) == "kysquare") then ! C*ky**2*(phi-n) where kz~ky
-!$OMP parallel do default(none) private(mx,my) shared(dfdt,pb_phidns,pb_phiomg,ky,ksq_labframe,ff,phi,eta,ca,nu)
+!$OMP parallel do default(none) private(mx,my) shared(dfdt,pb_phidns,pb_phiomg,ky,ksq_labframe,ff,phi,eta,ca,nu,nkx,nky)
       do my = 0, nky
         do mx = -nkx, nkx
           dfdt(mx,my,0) = - pb_phidns(mx,my)                &
@@ -342,7 +342,7 @@ SUBROUTINE calc_pb(ff, gg, pb)
   real(kind=DP), dimension(0:nx-1,0:ny-1) :: dfdx, dfdy, dgdx, dgdy, wkxy
   integer :: mx, my, ix, iy
 
-!$OMP parallel do default(none) private(mx,my) shared(ff,gg,kx_labframe,ky,ikxf,ikyf,ikxg,ikyg)
+!$OMP parallel do default(none) private(mx,my) shared(ff,gg,kx_labframe,ky,ikxf,ikyf,ikxg,ikyg,nkx,nky)
     do my = 0, nky
       do mx = -nkx, nkx
         !ikxf(mx,my) = ci * kx(mx) * ff(mx,my)
@@ -358,7 +358,7 @@ SUBROUTINE calc_pb(ff, gg, pb)
     call fft_backward_xy(ikxg, dgdx)
     call fft_backward_xy(ikyg, dgdy)
 
-!$OMP parallel do default(none) private(ix,iy) shared(wkxy,dfdx,dgdy,dfdy,dgdx)
+!$OMP parallel do default(none) private(ix,iy) shared(wkxy,dfdx,dgdy,dfdy,dgdx,nx,ny)
     do iy = 0, ny-1
       do ix = 0, nx-1
         wkxy(ix,iy) = dfdx(ix,iy) * dgdy(ix,iy) - dfdy(ix,iy) * dgdx(ix,iy)
@@ -383,7 +383,7 @@ SUBROUTINE field_solver(ff, phi)
 
   integer :: mx, my
 
-!$OMP parallel do default(none) private(mx,my) shared(ff,phi,fct_poisson_labframe)
+!$OMP parallel do default(none) private(mx,my) shared(ff,phi,fct_poisson_labframe,nkx,nky)
     do my = 0, nky
       do mx = -nkx, nkx
         phi(mx,my) = fct_poisson_labframe(mx,my) * ff(mx,my,1)
@@ -459,7 +459,7 @@ SUBROUTINE rkg4(time, ff, phi)
 !--------------!
 
     call time_diff(time, ff, phi, dfdt)
-!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq) collapse(2)
+!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq,nkx,nky) collapse(2)
     do iv = 0, 1
       do my = 0, nky
         do mx = -nkx, nkx
@@ -474,11 +474,11 @@ SUBROUTINE rkg4(time, ff, phi)
     end do
     call field_solver(ff, phi)
     call reality_condition(ff, phi, qq)
-    call shearflow_aliasing(ff,phi,qq)
+    call shearflow_aliasing(ff, phi, qq)
 
     call shearflow_update_labframe(0.5_DP * dt)
     call time_diff(time + 0.5_DP * dt, ff, phi, dfdt)
-!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq) collapse(2)
+!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq,nkx,nky) collapse(2)
     do iv = 0, 1
       do my = 0, nky
         do mx = -nkx, nkx
@@ -493,10 +493,10 @@ SUBROUTINE rkg4(time, ff, phi)
     end do
     call field_solver(ff, phi)
     call reality_condition(ff, phi, qq)
-    call shearflow_aliasing(ff,phi,qq)
+    call shearflow_aliasing(ff, phi, qq)
 
     call time_diff(time + 0.5_DP * dt, ff, phi, dfdt)
-!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq) collapse(2)
+!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq,nkx,nky) collapse(2)
     do iv = 0, 1
       do my = 0, nky
         do mx = -nkx, nkx
@@ -511,11 +511,11 @@ SUBROUTINE rkg4(time, ff, phi)
     end do
     call field_solver(ff, phi)
     call reality_condition(ff, phi, qq)
-    call shearflow_aliasing(ff,phi,qq)
+    call shearflow_aliasing(ff, phi, qq)
 
     call shearflow_update_labframe(0.5_DP * dt)
     call time_diff(time + dt, ff, phi, dfdt)
-!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq) collapse(2)
+!$OMP parallel do default(none) private(mx,my,k,r,s) shared(dt,dfdt,ff,qq,nkx,nky) collapse(2)
     do iv = 0, 1
       do my = 0, nky
         do mx = -nkx, nkx
@@ -530,7 +530,7 @@ SUBROUTINE rkg4(time, ff, phi)
     end do
     call field_solver(ff, phi)
     call reality_condition(ff, phi, qq)
-    call shearflow_aliasing(ff,phi,qq)
+    call shearflow_aliasing(ff, phi, qq)
 
 
 END SUBROUTINE rkg4

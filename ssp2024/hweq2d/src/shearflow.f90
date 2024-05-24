@@ -54,10 +54,15 @@ SUBROUTINE shearflow_init
       end do
     end do
 
-    do my = 0, nky
-      mx_aliasing_left(my) = -nkx+0.5*my-1
-      mx_aliasing_right(my) = nkx-0.5*my+1
-    end do
+    if (gammae /= 0.d0) then
+      do my = 0, nky
+        mx_aliasing_left(my) = -nkx+0.5*my-1
+        mx_aliasing_right(my) = nkx-0.5*my+1
+      end do
+    else
+      mx_aliasing_left(:) = -nkx-1
+      mx_aliasing_right(:) = nkx+1
+    end if
 
 END SUBROUTINE shearflow_init
 
