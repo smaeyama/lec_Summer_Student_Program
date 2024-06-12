@@ -60,6 +60,7 @@ for my in range(nky+1):
     ax.plot(t,enetky[:,my],label=r"$k_y$={:5.2f}".format(ky[my]))
 ax.set_yscale("log")
 vmax=float(np.max(enetky))
+print(abs(phi[10:]).max())
 ax.set_ylim(vmax*1e-8,vmax)
 ax.legend(bbox_to_anchor=(1,0),loc="lower left",ncol=3)
 plt.show()

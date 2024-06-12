@@ -159,7 +159,7 @@ def update_quad(i):
     vmax=enekxky.max()
     quad.set_clim(vmax*1e-4,vmax)
     
-for i in range(0,len(t),1):
+for i in range(0,len(t),10):
     update_quad(i)
     fig.savefig("./png_phiinkxky/phiinkxky_t{:08d}".format(i),dpi=100)
 

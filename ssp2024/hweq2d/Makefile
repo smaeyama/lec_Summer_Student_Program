@@ -2,8 +2,6 @@
 # Makefile
 #
 
-
-
 ### Intel fortran ###
 FC = ifx
 FFLAGS = -warn all -fpp -std #-traceback \
@@ -14,7 +12,7 @@ LIB = -qmkl
 NF_DIR = /home/smaeyama/mylib/netcdf-fortran-4.6.1-ifx
 INC += -I/$(NF_DIR)/include
 LIB += -L/$(NF_DIR)/lib -lnetcdff
-OPENMP = -qopenmp
+#OPENMP = -qopenmp
 
 ### GNU fortran ###
 #FC = gfortran
