@@ -3,26 +3,26 @@
 #
 
 ### Intel fortran ###
-FC = ifx
-FFLAGS = -warn all -fpp -std #-traceback \
-         -check bounds -check uninit -fpe0 # These options may cause slow down
-FFLAGS += -O3 -xHOST -r8 -mcmodel=large
-INC = 
-LIB = -qmkl
-NF_DIR = /home/smaeyama/mylib/netcdf-fortran-4.6.1-ifx
-INC += -I/$(NF_DIR)/include
-LIB += -L/$(NF_DIR)/lib -lnetcdff
-#OPENMP = -qopenmp
+#FC = ifx
+#FFLAGS = -warn all -fpp -std #-traceback \
+#         -check bounds -check uninit -fpe0 # These options may cause slow down
+#FFLAGS += -O3 -xHOST -r8 -mcmodel=large
+#INC = 
+#LIB = -qmkl
+#NF_DIR = /home/smaeyama/mylib/netcdf-fortran-4.6.1-ifx
+#INC += -I/$(NF_DIR)/include
+#LIB += -L/$(NF_DIR)/lib -lnetcdff
+##OPENMP = -qopenmp
 
 ### GNU fortran ###
-#FC = gfortran
-#FFLAGS = -Wall -Wextra -pedantic -fbacktrace \
-#         -fbounds-check -Wuninitialized -ffpe-trap=invalid,zero,overflow 
-#FFLAGS += -mcmodel=medium -m64 -march=native -mtune=native -O3 -ffast-math
-#INC = -I/usr/include
-#LIB = -L/usr/lib -lfftw3 -lm -lnetcdff -lfftw3_threads
-# #OPENMP = -fopenmp
-# #LIB += -lfftw3_threads
+FC = gfortran
+FFLAGS = -Wall -Wextra -pedantic -fbacktrace \
+         -fbounds-check -Wuninitialized -ffpe-trap=invalid,zero,overflow 
+FFLAGS += -mcmodel=medium -m64 -march=native -mtune=native -O3 -ffast-math
+INC = -I/usr/include
+LIB = -L/usr/lib -lfftw3 -lm -lnetcdff -lfftw3_threads
+#OPENMP = -fopenmp
+#LIB += -lfftw3_threads
 
 DIR = ./src/
 
