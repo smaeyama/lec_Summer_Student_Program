@@ -18,14 +18,14 @@ $$ \frac{\partial \tilde{n}}{\partial t} + [\tilde{\phi}, \tilde{n}] + \kappa \f
 - $` C = -\frac{T_e}{\eta e^2 n_0} \nabla_\parallel^2 = - c_a \partial_y^2 `$（断熱パラメータ）
 
 ※専門的な補足
-1. 断熱パラメータ $`C`$ の扱いに多少歴史的経緯があって、若谷先生の原著論文 [M. Wakatani and A. Hasegawa, "A collisional drift wave description of plasma edge turbulence", Phys. Fluids 27, 611 (1984). http://dx.doi.org/10.1063/1.864660] では成長率が最大になるように $`\nabla_\parallel`$ を選ぶことにしていました。別の論文 [R. Numata, et al., "Bifurcation in electrostatic resistive drift wave turbulence", Phys. Plasmas 14, 102312 (2007). https://doi.org/10.1063/1.2796106] では磁気面上一様揺動 $`k_y=0`$ に対する電子応答の違いから断熱パラメータ $`C`$ を切り替えると帯状流が卓越するようになる修正長谷川-若谷モデルが議論されました。本コードでは、parameters.namelistファイルで `flag_adiabaticity = "kysquare"` とパラメータ設定すると、スラブ配位を想定して $`C \sim k_z^2 \sim k_y^2`$ としたモデルになるようにしています。
-2. 超粘性項（$`\nu \nabla^4`$）のモデルは論文によって異なるが、ここではあまり効かないパラメータ領域を想定します。
+1. 断熱パラメータ $`C`$ の扱いに多少歴史的経緯があって、若谷先生の原著論文 [M. Wakatani and A. Hasegawa, "A collisional drift wave description of plasma edge turbulence", Phys. Fluids 27, 611 (1984). http://dx.doi.org/10.1063/1.864660] では成長率が最大になるように $`\nabla_\parallel`$ を選ぶことにしていました。別の論文 [R. Numata, et al., "Bifurcation in electrostatic resistive drift wave turbulence", Phys. Plasmas 14, 102312 (2007). https://doi.org/10.1063/1.2796106] では磁気面上一様揺動 $`k_y=0`$ に対する電子応答の違いから断熱パラメータ $`C`$ を切り替えると帯状流が卓越するようになる修正長谷川-若谷モデルが議論されました。本コードでは、`param.namelist`ファイルで `flag_adiabaticity = "kysquare"` とパラメータ設定すると、スラブ配位を想定して $`C \sim k_z^2 \sim k_y^2`$ としたモデルになるようにしています。
+2. 超粘性項（$`\nu \nabla^4`$）のモデルは論文によって異なりますが、ここではあまり効かないパラメータ領域を想定します。
 
 
 ## 使用方法
 
 1. **プログラムのコンパイル**
-    ターミナル上でメイクコマンドによりコンパイルします。
+    ターミナル上で`make`コマンドによりコンパイルします。`Makefile`ファイル内でコンパイルに関する環境設定を行いましょう。netcdf-fortranを利用していますので、例えばDebian系Linux環境の場合は apt コマンドなどで事前にインストールしておきます。 
     ```bash
     make
     ```
@@ -54,7 +54,7 @@ $$ \frac{\partial \tilde{n}}{\partial t} + [\tilde{\phi}, \tilde{n}] + \kappa \f
     時刻ステップ it = 0, 1, ... でのFourier係数 $` \tilde{\phi}_{k_x,k_y}, \tilde{n}_{k_x,k_y}, \tilde{u}_{k_x,k_y}`$ の2次元波数空間(kx,ky)分布データ。  
 
 4. **ポスト処理データ解析**
-    シミュレーションデータのNetCDFファイルを読み込んで図示したり、データ分析を行う Python スクリプトを diag/ ディレクトリに置いてあります。
+    シミュレーションデータのNetCDFファイルを読み込んで図示したり、データ分析を行う Python スクリプトを `diag/` ディレクトリに置いてあります。
     ```
     animation_phiinxy.ipynb   # phi(x,y) の2次元分布アニメーション
     animation_phiinkxky.ipynb # |phi(kx,ky)|^2 の2次元分布アニメーション
