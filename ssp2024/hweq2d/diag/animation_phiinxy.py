@@ -29,9 +29,9 @@ print(ds)
 phi=da.array(ds.phi)
 dns=da.array(ds.dns)
 omg=da.array(ds.omg)
-x=np.array(ds.x)
-y=np.array(ds.y)
-t=np.array(ds.t)
+x=(ds.x).to_numpy()
+y=(ds.y).to_numpy()
+t=(ds.t).to_numpy()
 nx=len(x)
 ny=len(y)
 nt=len(t)
@@ -157,7 +157,7 @@ def update_quad(i):
     vmax=np.max(np.abs(phi[i,:,:]))
     quad.set_clim(-vmax,vmax)
 
-for i in range(0,len(t),10):
+for i in range(0,len(t),1):
     update_quad(i)
     fig.savefig("./png_phiinxy/phiinxy_t{:08d}".format(i),dpi=100)
 

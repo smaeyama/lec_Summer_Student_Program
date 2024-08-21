@@ -17,10 +17,12 @@
 ### GNU fortran ###
 FC = gfortran
 FFLAGS = -Wall -Wextra -pedantic -fbacktrace \
-         -fbounds-check -Wuninitialized -ffpe-trap=invalid,zero,overflow 
+         -fbounds-check -Wuninitialized #-ffpe-trap=invalid,zero,overflow 
 FFLAGS += -mcmodel=medium -m64 -march=native -mtune=native -O3 -ffast-math
-INC = -I/usr/include
-LIB = -L/usr/lib -lfftw3 -lm -lnetcdff -lfftw3_threads
+#INC = -I/usr/include
+#LIB = -L/usr/lib -lfftw3 -lm -lnetcdff -lfftw3_threads
+INC = -I$(CONDA_PREFIX)/include
+LIB = -L$(CONDA_PREFIX)/lib -lfftw3 -lm -lnetcdff -lfftw3_threads
 #OPENMP = -fopenmp
 #LIB += -lfftw3_threads
 

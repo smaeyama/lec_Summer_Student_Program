@@ -8,18 +8,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
 
-ds = xr.open_mfdataset("./data_netcdf/S_kpq_0000-0099.nc")
-S_kpq = np.array(ds.S_kpq)
-# print(S_kpq)
-ky=np.array(ds.ky)
-kx=np.array(ds.kx)
+ds = xr.open_mfdataset("./data_netcdf/S_kpq_0800-0899.nc")
+print(ds)
+S_kpq = (ds.S_kpq).to_numpy()
+ky=(ds.ky).to_numpy()
+kx=(ds.kx).to_numpy()
 nkx=int((len(kx)-1)/2)
 nky=int((len(ky)-1)/2)
+
 #S_kpq_max = np.abs(S_kpq).max()
 S_kpq_max = np.max([abs(S_kpq.max()),abs(S_kpq.min())])
 S_kpq = S_kpq / S_kpq_max
 print("S_kpq_max(abs):", S_kpq_max)
 print("S_kpq_max(normalized):",S_kpq.max(),", S_kpq_min(normalized):",S_kpq.min())
+
+print("kxmin=",kx[1],", kymin=",ky[1])
 
 
 # In[ ]:
@@ -153,7 +156,8 @@ def triadgraph_symmetric_all(trans,kxmin=1.0,kymin=1.0,output=None,title=None,sc
         for my in np.roll(np.arange(-nky,nky+1),nky+1):
             wlist = []
             for mx in np.roll(np.arange(-nkx,nkx+1),nkx+1):
-                wlist.append((mx*kxmin,my*kymin))
+                # wlist.append(("{:.1f}".format(mx*kxmin),"{:.1f}".format(my*kymin)))
+                wlist.append("{:.1f}, {:.1f}".format(mx*kxmin, my*kymin))
             nodename.append(wlist)
     G.node_attr["shape"]="ellipse" # Default node shape
     G.node_attr["fixedsize"]=True
@@ -171,11 +175,11 @@ def triadgraph_symmetric_all(trans,kxmin=1.0,kymin=1.0,output=None,title=None,sc
 #                    style="filled",fillcolor=convert_energy2color(energy[k]))
 
     # add edges
-    for my in range(-30,30+1):
-        for mx in range(-30,30+1):
-            for qy in range(-30,30+1):
+    for my in range(-nky,nky+1):
+        for mx in range(-nkx,nkx+1):
+            for qy in range(-nky,nky+1):
                 if (abs(-my-qy)<=nky):
-                    for qx in range(-30,30+1):
+                    for qx in range(-nkx,nkx+1):
                         if (abs(-my-qx)<=nkx):
                             triadgraph_symmetric_kernel(G,trans,mx,my,qx,qy,screening,pwidth,nodename)
 
@@ -239,7 +243,8 @@ def triadgraph_symmetric_kpq(trans,mx_in,my_in,qx_in,qy_in,kxmin=1.0,kymin=1.0,o
         for my in np.roll(np.arange(-nky,nky+1),nky+1):
             wlist = []
             for mx in np.roll(np.arange(-nkx,nkx+1),nkx+1):
-                wlist.append((mx*kxmin,my*kymin))
+                # wlist.append(("{:.1f}".format(mx*kxmin),"{:.1f}".format(my*kymin)))
+                wlist.append("{:.1f}, {:.1f}".format(mx*kxmin, my*kymin))
             nodename.append(wlist)
     G.node_attr["shape"]="ellipse" # Default node shape
     G.node_attr["fixedsize"]=True
@@ -274,7 +279,7 @@ def triadgraph_symmetric_kpq(trans,mx_in,my_in,qx_in,qy_in,kxmin=1.0,kymin=1.0,o
 # In[ ]:
 
 
-triadgraph_symmetric_all(S_kpq,kxmin=kx[1],kymin=ky[1],title="S_kpq",screening=0.5)
+triadgraph_symmetric_all(S_kpq,kxmin=kx[1],kymin=ky[1],title="S_kpq",screening=0.7)
 
 
 # In[ ]:
@@ -298,6 +303,12 @@ print("S_qkp=",wS_qkp,"#(qx,qy)=({:},{:})".format(kx[qx],ky[qy]))
 print("total=",wS_kpq+wS_pqk+wS_qkp)
 
 triadgraph_symmetric_kpq(S_kpq,mx_in=mx,my_in=my,qx_in=qx,qy_in=qy,title="S_kpq",screening=0.0)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:

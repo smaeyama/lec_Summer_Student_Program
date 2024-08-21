@@ -10,6 +10,7 @@ import xarray as xr
 import dask.array as da
 import f90nml
 import glob
+from time import time as timer
 
 filelist = sorted(glob.glob("./data_netcdf/S_kpq*nc"))
 print(filelist)
@@ -19,7 +20,6 @@ print(filelist)
 
 
 from numba import njit, prange
-from time import time as timer
 
 @njit(parallel=True)                # Acceleration by Numba, with parallelization at prange
 def calculate_D_kpq(S_kpq):
@@ -119,15 +119,15 @@ def calculate_D_kpq(S_kpq):
 
 for f in filelist:
     ds = xr.open_dataset(f)
-    S_kpq = np.array(ds.S_kpq)
-    ky=np.array(ds.ky)
-    kx=np.array(ds.kx)
+    S_kpq = (ds.S_kpq).to_numpy()
+    ky=(ds.ky).to_numpy()
+    kx=(ds.kx).to_numpy()
     nkx=int((len(kx)-1)/2)
     nky=int((len(ky)-1)/2)
 
-    t1 = timer()
+    # t1 = timer()
     D_kpq = calculate_D_kpq(S_kpq)
-    t2 = timer(); print("Elapsed time [sec]:",t2-t1)
+    # t2 = timer(); print("Elapsed time [sec]:",t2-t1)
     
     xr_D_kpq=xr.DataArray(D_kpq,dims=("ky","kx","qy","qx"),coords={"ky":ky,"kx":kx,"qy":ky,"qx":kx})
     ds=xr.Dataset({"D_kpq":xr_D_kpq},
@@ -135,7 +135,7 @@ for f in filelist:
                                        "D_kpq means energy gain (D>0) or loss (S<0) of the mode k from the mode q via the coupling with the mediator p. \n"+
                                        "    Fourier mode coupling condition: k+p+q=0. \n"+
                                        "    Anti-symmetry: D_{k<-q}^p = -D_{q<-k}^p. \n"+
-                                       "    Relation to net energy gain of the mode k: T_k = \sum_p \sum_q D_k^pq. \n"+
+                                       "    Relation to net energy gain of the mode k: T_k = Sum_p Sum_q D_k^pq. \n"+
                                        "For details, see, S. Maeyama et al., New J. Phys. 23, 043049 (2021). https://doi.org/10.1088/1367-2630/abeffc"})
     outfile = f.replace("S_kpq_","D_kpq_")
     print(outfile)
@@ -180,6 +180,26 @@ ky_shift = np.fft.fftshift(ky)
 T_k_shift = np.fft.fftshift(T_k)
 vmax = abs(T_k).max()
 quad = ax.pcolormesh(kx_shift,ky_shift,T_k_shift,
+                     cmap="RdBu_r",vmin=-vmax,vmax=vmax,shading="auto")
+fig.colorbar(quad)
+plt.show()
+
+
+diff_T_k = np.sum(S_kpq, axis=(-2,-1)) - np.sum(D_kpq, axis=(-2,-1))
+fig = plt.figure()
+ax = fig.add_subplot(111)
+xylim=4
+ax.set_xlim(-xylim,xylim)
+ax.set_ylim(-xylim,xylim)
+ax.set_xlabel(r"$k_x$")
+ax.set_ylabel(r"$k_y$")
+ax.set_aspect("equal")
+ax.set_title(r"$Difference: \sum_p \sum_q S_{k}^{p,q} - \sum_p \sum_q D_{k \leftarrow q}^{p}$")
+kx_shift = np.fft.fftshift(kx)
+ky_shift = np.fft.fftshift(ky)
+diff_T_k_shift = np.fft.fftshift(diff_T_k)
+vmax = abs(T_k).max()
+quad = ax.pcolormesh(kx_shift,ky_shift,diff_T_k_shift,
                      cmap="RdBu_r",vmin=-vmax,vmax=vmax,shading="auto")
 fig.colorbar(quad)
 plt.show()

@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import xarray as xr
 import dask.array as da
 import f90nml
+from time import time as timer
 
 nml = f90nml.read("../param.namelist")
 nx = nml["numer"]["nx"]
@@ -28,12 +29,12 @@ print("# init_ampl =",init_ampl)
 
 ds=xr.open_mfdataset("../data/phiinkxky*.nc")
 print(ds)
-phi=da.array(ds.rephi + 1j*ds.imphi)
-dns=da.array(ds.redns + 1j*ds.imdns)
-omg=da.array(ds.reomg + 1j*ds.imomg)
-kx=np.array(ds.kx)
-ky=np.array(ds.ky)
-t=np.array(ds.t)
+phi=(ds.rephi + 1j*ds.imphi).to_numpy()
+dns=(ds.redns + 1j*ds.imdns).to_numpy()
+omg=(ds.reomg + 1j*ds.imomg).to_numpy()
+kx=(ds.kx).to_numpy()
+ky=(ds.ky).to_numpy()
+t=(ds.t).to_numpy()
 nkx=int((len(kx)-1)/2)
 nky=len(ky)-1
 nt=len(t)
@@ -56,7 +57,7 @@ def copy_extended_k_space(nkx,nky,phi):
     phik[:,nky+1:2*nky+1,nkx+1:2*nkx+1] = np.conj(phi[:,nky:0:-1,2*nkx:nkx:-1])
     phik[:,nky+1:2*nky+1,0:nkx+1] = np.conj(phi[:,nky:0:-1,nkx::-1])
     return phik
-
+    
 kx_shift = np.zeros([2*nkx+1])
 kx_shift[0:nkx+1] = kx[nkx:]
 kx_shift[-nkx:] = kx[:nkx]
@@ -133,7 +134,6 @@ def calc_S_kpq_k(mx,my,nkx,nky,kx,ky,fk,gk,hk):
 # In[ ]:
 
 
-from time import time as timer
 from numba import njit, prange
 
 @njit(parallel=True)
@@ -194,7 +194,7 @@ for i in range(split):
                                        "    Fourier mode coupling condition: k+p+q=0. \n"+
                                        "    Symmetry: S_k^pq = S_k^qp. \n"+
                                        "    Detailed balance: S_k^pq+S_p^qk+S_q^kp=0. \n"+
-                                       "    Relation to net energy gain of the mode k: T_k = \sum_p \sum_q S_k^pq.",
+                                       "    Relation to net energy gain of the mode k: T_k = sum_p sum_q S_k^pq.",
                         "time-window":"Averaged over {:}<=t<={:}".format(t[sta],t[end-1])})
     ds.to_netcdf("./data_netcdf/S_kpq_{:04d}-{:04d}.nc".format(sta,end-1),mode="w")
 
