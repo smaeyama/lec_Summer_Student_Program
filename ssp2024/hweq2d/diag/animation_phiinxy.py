@@ -157,7 +157,7 @@ def update_quad(i):
     vmax=np.max(np.abs(phi[i,:,:]))
     quad.set_clim(-vmax,vmax)
 
-for i in range(0,len(t),1):
+for i in range(0,len(t),10):
     update_quad(i)
     fig.savefig("./png_phiinxy/phiinxy_t{:08d}".format(i),dpi=100)
 

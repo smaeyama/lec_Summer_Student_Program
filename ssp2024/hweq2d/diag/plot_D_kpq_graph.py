@@ -8,18 +8,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
 
-ds = xr.open_mfdataset("./data_netcdf/D_kpq_0000-0099.nc")
-D_kpq = np.array(ds.D_kpq)
-# print(D_kpq)
-ky=np.array(ds.ky)
-kx=np.array(ds.kx)
+ds = xr.open_mfdataset("./data_netcdf/D_kpq_0800-0899.nc")
+print(ds)
+D_kpq = (ds.D_kpq).to_numpy()
+ky=(ds.ky).to_numpy()
+kx=(ds.kx).to_numpy()
 nkx=int((len(kx)-1)/2)
 nky=int((len(ky)-1)/2)
-print(ds, ds.attrs)
-# S_kpq_max = np.max([abs(S_kpq.max()),abs(S_kpq.min())])
-S_kpq_max = 0.0006448291317120333
-D_kpq = D_kpq / S_kpq_max
-print(S_kpq_max,D_kpq.max(),D_kpq.min())
+
+D_kpq_max = np.max([abs(D_kpq.max()),abs(D_kpq.min())])
+D_kpq = D_kpq / D_kpq_max
+print("D_kpq_max(abs):", D_kpq_max)
+print("D_kpq_max(normalized):",D_kpq.max(),", D_kpq_min(normalized):",D_kpq.min())
+
+print("kxmin=",kx[1],", kymin=",ky[1])
 
 
 # In[ ]:
@@ -125,7 +127,8 @@ def triadgraph_directional_all(trans,kxmin=1.0,kymin=1.0,output=None,title=None,
         for my in np.roll(np.arange(-nky,nky+1),nky+1):
             wlist = []
             for mx in np.roll(np.arange(-nkx,nkx+1),nkx+1):
-                wlist.append((mx*kxmin,my*kymin))
+                # wlist.append((mx*kxmin,my*kymin))
+                wlist.append("{:.1f}, {:.1f}".format(mx*kxmin, my*kymin))
             nodename.append(wlist)
     G.node_attr["shape"]="ellipse" # Default node shape
     G.node_attr["fixedsize"]=True
@@ -143,11 +146,11 @@ def triadgraph_directional_all(trans,kxmin=1.0,kymin=1.0,output=None,title=None,
 #                    style="filled",fillcolor=convert_energy2color(energy[k]))
 
     # add edges
-    for my in range(-30,30+1):
-        for mx in range(-30,30+1):
-            for qy in range(-30,30+1):
+    for my in range(-nky,nky+1):
+        for mx in range(-nkx,nkx+1):
+            for qy in range(-nky,nky+1):
                 if (abs(-my-qy)<=nky):
-                    for qx in range(-30,30+1):
+                    for qx in range(-nkx,nkx+1):
                         if (abs(-my-qx)<=nkx):
                             triadgraph_directional_kernel(G,trans,mx,my,qx,qy,screening,pwidth,nodename)
 
@@ -211,7 +214,8 @@ def triadgraph_directional_kpq(trans,mx_in,my_in,qx_in,qy_in,kxmin=1.0,kymin=1.0
         for my in np.roll(np.arange(-nky,nky+1),nky+1):
             wlist = []
             for mx in np.roll(np.arange(-nkx,nkx+1),nkx+1):
-                wlist.append((mx*kxmin,my*kymin))
+                # wlist.append((mx*kxmin,my*kymin))
+                wlist.append("{:.1f}, {:.1f}".format(mx*kxmin, my*kymin))
             nodename.append(wlist)
     G.node_attr["shape"]="ellipse" # Default node shape
     G.node_attr["fixedsize"]=True

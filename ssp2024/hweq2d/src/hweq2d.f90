@@ -262,6 +262,7 @@ SUBROUTINE time_diff(time, ff, phi, dfdt)
   complex(kind=DP), dimension(-nkx:nkx,0:nky,0:1), intent(out) :: dfdt
 
   complex(kind=DP), dimension(-nkx:nkx,0:nky) :: pb_phidns, pb_phiomg
+  real(kind=DP), dimension(0:nky) :: wca
   integer :: mx, my
 
     if (trim(flag_calctype) == "linear") then ! Linear
@@ -298,6 +299,21 @@ SUBROUTINE time_diff(time, ff, phi, dfdt)
                           - nu * ksq_labframe(mx,my)**2 * ff(mx,my,0)
           dfdt(mx,my,1) = - pb_phiomg(mx,my)                &
                           - ca * ky(my)**2 * (ff(mx,my,0) - phi(mx,my)) &
+                          - nu * ksq_labframe(mx,my)**2 * ff(mx,my,1)
+        end do
+      end do
+    else if (trim(flag_adiabaticity) == "modified") then ! C*(phi(ky/=0)-n(ky/=0))
+      wca(:) = ca
+      wca(0) = 0._DP
+!$OMP parallel do default(none) private(mx,my) shared(dfdt,pb_phidns,pb_phiomg,ky,ksq_labframe,ff,phi,eta,ca,nu,nkx,nky,wca)
+      do my = 0, nky
+        do mx = -nkx, nkx
+          dfdt(mx,my,0) = - pb_phidns(mx,my)                &
+                          - ci * eta * ky(my) * phi(mx,my)  &
+                          - wca(my) * (ff(mx,my,0) - phi(mx,my)) &
+                          - nu * ksq_labframe(mx,my)**2 * ff(mx,my,0)
+          dfdt(mx,my,1) = - pb_phiomg(mx,my)                &
+                          - wca(my) * (ff(mx,my,0) - phi(mx,my)) &
                           - nu * ksq_labframe(mx,my)**2 * ff(mx,my,1)
         end do
       end do

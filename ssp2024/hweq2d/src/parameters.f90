@@ -38,6 +38,8 @@ MODULE parameters
 !- flags for computation -!
   character(len=9) :: flag_adiabaticity != "constant" ! C*(phi-n) where kz=const.
                                         != "kysquare" ! C*ky**2*(phi-n) where kz~ky
+                                        != "modified" ! C*(phi(ky/=0)-n(ky/=0)) where 
+                                        !               kz=const for ky/=0, but kz=0 for ky=0.
 
   character(len=9) :: flag_calctype     != "linear"    ! Linear
                                         != "nonlinear" ! Nonlinear

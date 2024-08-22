@@ -293,7 +293,7 @@ qx=0
 qy=5
 px=-mx-qx
 py=-my-qy
-print("#Check the detailed balance")
+print("#Check the detailed balance; S_kpq + S_pqk + S_qkp = 0")
 wS_kpq=float(S_kpq[my,mx,qy,qx])
 wS_pqk=float(S_kpq[py,px,my,mx])
 wS_qkp=float(S_kpq[qy,qx,py,px])
