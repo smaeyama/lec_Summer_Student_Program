@@ -240,9 +240,9 @@ fig = plt.figure(figsize=(8,6))
 ax = fig.add_subplot(111)
 for i in range(annot.shape[0]):
     ax.annotate("",annot[i,0:2],annot[i,2:4],
-                arrowprops = dict(width=annot[i,4]*8,
-                                  headwidth=annot[i,4]*20,
-                                  headlength=annot[i,4]*20,
+                arrowprops = dict(width=annot[i,4]*2,
+                                  headwidth=annot[i,4]*5,
+                                  headlength=annot[i,4]*5,
                                   edgecolor=convert_color(annot[i,4]),
                                   facecolor=convert_color(annot[i,4])
                                  ))
@@ -277,9 +277,9 @@ fig = plt.figure(figsize=(8,6))
 ax = fig.add_subplot(111)
 for i in range(annot.shape[0]):
     ax.annotate("",annot[i,0:2],annot[i,2:4],
-                arrowprops = dict(width=annot[i,4]*8,
-                                  headwidth=annot[i,4]*20,
-                                  headlength=annot[i,4]*20,
+                arrowprops = dict(width=annot[i,4]*2,
+                                  headwidth=annot[i,4]*5,
+                                  headlength=annot[i,4]*5,
                                   edgecolor=convert_color(annot[i,4]),
                                   facecolor=convert_color(annot[i,4])
                                  ))
@@ -302,9 +302,9 @@ fig = plt.figure(figsize=(16,8))
 ax = fig.add_subplot(111)
 for i in range(annot.shape[0]):
     ax.annotate("",annot[i,0:2],annot[i,2:4],
-                arrowprops = dict(width=annot[i,4]*8,
-                                  headwidth=annot[i,4]*20,
-                                  headlength=annot[i,4]*20,
+                arrowprops = dict(width=annot[i,4]*2,
+                                  headwidth=annot[i,4]*5,
+                                  headlength=annot[i,4]*5,
                                   edgecolor=convert_color(annot[i,4]),
                                   facecolor=convert_color(annot[i,4])
                                  ))
@@ -352,9 +352,9 @@ fig = plt.figure(figsize=(16,8))
 ax = fig.add_subplot(111)
 for i in range(annot.shape[0]):
     ax.annotate("",annot[i,0:2],annot[i,2:4],
-                arrowprops = dict(width=annot[i,4]*8,
-                                  headwidth=annot[i,4]*20,
-                                  headlength=annot[i,4]*20,
+                arrowprops = dict(width=annot[i,4]*2,
+                                  headwidth=annot[i,4]*5,
+                                  headlength=annot[i,4]*5,
                                   edgecolor=convert_color(annot[i,4]),
                                   facecolor=convert_color(annot[i,4])
                                  ))
