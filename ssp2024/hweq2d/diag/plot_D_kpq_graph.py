@@ -254,7 +254,7 @@ def triadgraph_directional_kpq(trans,mx_in,my_in,qx_in,qy_in,kxmin=1.0,kymin=1.0
 # In[ ]:
 
 
-triadgraph_directional_all(D_kpq,title="D_kpq",screening=0.25)
+triadgraph_directional_all(D_kpq,title="D_kpq",screening=0.5)
 
 
 # In[ ]:
