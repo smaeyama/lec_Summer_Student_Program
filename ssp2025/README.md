@@ -8,7 +8,5 @@
 
 準備中
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/smaeyama/lec_SOKENDAI_Simulation_Science/blob/ssp2025/ssp2025/pinn/Boundary_layer_PiNN.ipynb)
-
-
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/smaeyama/lec_Summer_Student_Program/blob/ssp2025/ssp2025/pinn/Boundary_layer_PiNN.ipynb)
 
