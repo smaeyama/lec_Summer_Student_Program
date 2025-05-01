@@ -23,12 +23,12 @@ Numerical solution of an elliptic partial differential equation by using PINN
 
 `02_pinn_boundary_layer`：  
 漸近接続理論を組み込んだPINNによる境界層問題の数値解法  
-Numerical solution of a boundary layer problem by using assymptically-matched PINN 
+Numerical solution of a boundary layer problem by using assymptically-matched PINN  
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/smaeyama/lec_Summer_Student_Program/blob/ssp2025/ssp2025/02_pinn_boundary_layer/Boundary_layer_PiNN.ipynb)
 
 `03_pino`：  
 物理情報付き作用素学習 (Physics-informed Neural Operators; PINOs) による楕円型偏微分方程式のの汎用数値解法  
-Numerical solution of a boundary layer problem by using PINO 
+Numerical solution of a boundary layer problem by using PINO  
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/smaeyama/lec_Summer_Student_Program/blob/ssp2025/ssp2025/03_pino/PINO.ipynb)
 
 
