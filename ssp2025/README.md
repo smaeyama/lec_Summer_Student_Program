@@ -37,4 +37,9 @@ Numerical solution of a boundary layer problem by using PINO
 2025.5.1 ほぼ整備完了。01_pinnに比べて、(i) DeepONet構造を取り入れた, (ii) 複数セットの問題条件について同時に解くように構成（解作用素の推定）することで未知の問題についても推定可能。  
 2025.6.24 Flax NNX APIに対応。
 
+`04_pinn_HW`：  
+物理情報付きニューラルネットワーク（Physics-Informed Neural Networks; PINNs）による線形長谷川-若谷方程式の数値解法  
+Numerical solution of the linearized Hasegawa-Wakatani equation by using PINN  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/smaeyama/lec_Summer_Student_Program/blob/main/ssp2025/04_pinn_HW/PINN_Hasegawa_Wakatani.ipynb)  
+2025.8.29 体験入学の学生さん達と一緒に01_pinnをベースに、空間2次元(t,y)かつ変数２変数n(t,y), phi(t,y)に拡張。
 
