@@ -22,6 +22,7 @@ Numerical solution of an elliptic partial differential equation by using PINN
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/smaeyama/lec_Summer_Student_Program/blob/main/ssp2025/01_pinn/PINN.ipynb)  
 2025.5.1 ほぼ整備完了。MLPでPoisson方程式を解く。  
 2025.6.24 Flax NNX APIに対応。
+2026.3.12 Flax NNX version 0.11のAPI変更に対応した微修正。
 
 `02_pinn_boundary_layer`：  
 漸近接続理論を組み込んだPINNによる境界層問題の数値解法  
